@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: #0f0f10;
+  color: #fff;
+}
+
+input,
+textarea {
+  color: #000;
+}
+
+/* Improve slick carousel dots for mobile */
+.slick-dots {
+  bottom: -30px !important;
+}
+
+.slick-dots li button:before {
+  font-size: 10px !important;
+}
+
+/* Better transitions */
+.small-product {
+  transition: transform 0.3s ease;
+}
+
+.small-product:hover {
+  transform: translateY(-5px);
+}
+
+/* Responsive typography */
+@media (max-width: 640px) {
+  .product-title {
+    font-size: 0.9rem;
+  }
+  .product-price {
+    font-size: 0.8rem;
+  }
+}
+
+/* Add to your CSS file */
+.product-carousel .slick-slide {
+  outline: none; /* Remove focus outline */
+}
+
+.product-carousel .slick-list {
+  margin: 0 -8px; /* Compensate for slide padding */
+}
+
+.product-carousel img {
+  transition: transform 0.3s ease;
+}
+
+.product-carousel img:hover {
+  transform: scale(1.02);
+}
+
+
