@@ -55,7 +55,7 @@ const AllProducts = () => {
 
                         <div className="mt-auto flex justify-between items-center">
                           <span className="text-sm font-bold text-gray-800">
-                            ${product?.price}
+                            LKR{product?.price}
                           </span>
                           <Link
                             to={`/admin/product/update/${product._id}`}

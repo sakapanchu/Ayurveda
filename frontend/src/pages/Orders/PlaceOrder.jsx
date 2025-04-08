@@ -40,14 +40,19 @@ const PlaceOrder = () => {
         taxPrice: cart.taxPrice,
         totalPrice: cart.totalPrice,
       }).unwrap();
-      
+
       dispatch(clearCartItems());
-      
-      if (cart.paymentMethod === "PayPal") {
-        navigate(`/order/${res._id}`);
-      } else {
+
+      if (cart.paymentMethod === "CashOnDelivery") {
+        const orderSummary = `Order Summary:\nItems: LKR${cart.itemsPrice}\nShipping: LKR${cart.shippingPrice}\nTax: LKR${cart.taxPrice}\nTotal: LKR${cart.totalPrice}\n\nDelivering To:\nAddress: ${cart.shippingAddress.address}\nCity: ${cart.shippingAddress.city}\nPostal Code: ${cart.shippingAddress.postalCode}\nCountry: ${cart.shippingAddress.country}\nPhone: ${cart.shippingAddress.phone}\n\nPayment Method: ${cart.paymentMethod}`;
+
+        const whatsappUrl = `https://wa.me/+94765599810?text=${encodeURIComponent(orderSummary)}`;
+        window.open(whatsappUrl, "_blank");
+
         setOrderId(res._id);
         setOrderSuccess(true);
+      } else {
+        navigate(`/order/${res._id}`);
       }
     } catch (error) {
       toast.error(error?.data?.message || error.message);
@@ -141,7 +146,7 @@ const PlaceOrder = () => {
             {cart.paymentMethod === "CashOnDelivery" ? (
               <>
                 Your items will be shipped soon. <br />
-                Please have <span className="font-semibold">${cart.totalPrice}</span> ready for delivery.
+                Please have <span className="font-semibold">LKR{cart.totalPrice}</span> ready for delivery.
               </>
             ) : (
               "Thank you for your purchase!"
@@ -185,19 +190,19 @@ const PlaceOrder = () => {
             <h3 className="font-medium text-yellow-800 mb-2">Order Summary</h3>
             <div className="flex justify-between text-sm text-gray-600">
               <span>Items:</span>
-              <span>${cart.itemsPrice}</span>
+              <span>LKR{cart.itemsPrice}</span>
             </div>
             <div className="flex justify-between text-sm text-gray-600">
               <span>Shipping:</span>
-              <span>${cart.shippingPrice}</span>
+              <span>LKR{cart.shippingPrice}</span>
             </div>
             <div className="flex justify-between text-sm text-gray-600">
               <span>Tax:</span>
-              <span>${cart.taxPrice}</span>
+              <span>LKR{cart.taxPrice}</span>
             </div>
             <div className="flex justify-between font-medium text-yellow-800 mt-2 pt-2 border-t border-purple-100">
               <span>Total:</span>
-              <span>${cart.totalPrice}</span>
+              <span>LKR{cart.totalPrice}</span>
             </div>
           </motion.div>
         </motion.div>
@@ -270,8 +275,8 @@ const PlaceOrder = () => {
                         </Link>
                       </td>
                       <td className="px-4 py-3">{item.qty}</td>
-                      <td className="px-4 py-3">${item.price.toFixed(2)}</td>
-                      <td className="px-4 py-3">${(item.qty * item.price).toFixed(2)}</td>
+                      <td className="px-4 py-3">LKR{item.price.toFixed(2)}</td>
+                      <td className="px-4 py-3">LKR{(item.qty * item.price).toFixed(2)}</td>
                     </motion.tr>
                   ))}
                 </tbody>
@@ -291,19 +296,19 @@ const PlaceOrder = () => {
             <div className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-gray-600">Items:</span>
-                <span className="font-medium">${cart.itemsPrice}</span>
+                <span className="font-medium">LKR{cart.itemsPrice}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Shipping:</span>
-                <span className="font-medium">${cart.shippingPrice}</span>
+                <span className="font-medium">LKR{cart.shippingPrice}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Tax:</span>
-                <span className="font-medium">${cart.taxPrice}</span>
+                <span className="font-medium">LKR{cart.taxPrice}</span>
               </div>
               <div className="flex justify-between border-t pt-3 mt-3">
                 <span className="text-lg font-bold text-gray-800">Total:</span>
-                <span className="text-lg font-bold text-green-600">${cart.totalPrice}</span>
+                <span className="text-lg font-bold text-green-600">LKR{cart.totalPrice}</span>
               </div>
             </div>
           </motion.div>

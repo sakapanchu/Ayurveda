@@ -24,10 +24,11 @@ const ProductCarousel = () => {
     arrows: window.innerWidth > 768,
     autoplay: true,
     autoplaySpeed: 3000,
+    touchMove: false, // Disable touch move to prevent passive event listener issues
   };
 
   return (
-    <div className="mb-8 w-full">
+    <div className="mb-8 w-full bg-[#E5E7EB]">
       {isLoading ? null : error ? (
         <Message variant="danger">
           {error?.data?.message || error.error}
@@ -49,7 +50,7 @@ const ProductCarousel = () => {
               {/* Product details */}
               <div className="text-black px-2">
                 <h2 className="text-green-500 text-xl mb-2">{product.name}</h2>
-                <p className="text-lg font-semibold mb-3">$ {product.price}</p>
+                <p className="text-lg font-semibold mb-3">LKR {product.price}</p>
                 <p className="text-gray-600 mb-4">
                   {product.description.substring(0, window.innerWidth > 768 ? 170 : 100)}...
                 </p>

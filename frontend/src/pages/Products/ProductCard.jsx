@@ -74,7 +74,7 @@ const ProductCard = ({ p }) => {
             className="text-sm font-semibold text-pink-500"
             whileHover={{ scale: 1.1 }}
           >
-            ${p?.price?.toFixed(2)}
+            LKR{p?.price?.toFixed(2)}
           </motion.p>
         </div>
 

@@ -119,7 +119,7 @@ const Cart = () => {
                         </Link>
                         <div className="text-gray-600">{item.brand}</div>
                         <div className="text-lg font-bold text-gray-800 mt-1">
-                          ${item.price.toFixed(2)}
+                          LKR{item.price.toFixed(2)}
                         </div>
                       </div>
 
@@ -170,7 +170,7 @@ const Cart = () => {
                   <div className="flex justify-between">
                     <span className="text-gray-600">Total</span>
                     <span className="text-xl font-bold text-green-700">
-                      ${cartItems
+                      LKR{cartItems
                         .reduce((acc, item) => acc + item.qty * item.price, 0)
                         .toFixed(2)}
                     </span>

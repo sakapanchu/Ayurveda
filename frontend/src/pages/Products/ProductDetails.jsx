@@ -216,7 +216,7 @@ const ProductDetails = () => {
                 transition={{ delay: 0.6 }}
               >
                 <div className="text-4xl font-extrabold text-pink-400">
-                  ${product.price}
+                  LKR{product.price}
                 </div>
 
                 {product.countInStock > 0 ? (

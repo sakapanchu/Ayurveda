@@ -156,7 +156,7 @@ const Order = () => {
                               {/* Changed text color */}
                               <FaTag className="text-gray-400 mr-2" size={12} />
                               <span className="truncate">
-                                ${item.price.toFixed(2)} each
+                                LKR{item.price.toFixed(2)} each
                               </span>{" "}
                               {/* Added truncate */}
                             </div>
@@ -230,7 +230,7 @@ const Order = () => {
                                   size={12}
                                 />
                                 <span className="text-gray-600">
-                                  ${item.price.toFixed(2)} each
+                                  LKR{item.price.toFixed(2)} each
                                 </span>
                               </div>
                               <div className="flex items-center">
@@ -245,7 +245,7 @@ const Order = () => {
                             </div>
                           </td>
                           <td className="px-4 py-4 font-medium text-green-700">
-                            ${(item.qty * item.price).toFixed(2)}
+                            LKR{(item.qty * item.price).toFixed(2)}
                           </td>
                         </motion.tr>
                       ))}
@@ -431,21 +431,21 @@ const Order = () => {
                     <FaShoppingCart className="mr-2 text-gray-400" size={14} />
                     <span>Items:</span>
                   </div>
-                  <span className="font-medium">${order.itemsPrice}</span>
+                  <span className="font-medium">LKP{order.itemsPrice}</span>
                 </div>
                 <div className="flex justify-between items-center py-2">
                   <div className="flex items-center text-gray-700">
                     <FaTruck className="mr-2 text-gray-400" size={14} />
                     <span>Shipping:</span>
                   </div>
-                  <span className="font-medium">${order.shippingPrice}</span>
+                  <span className="font-medium">LKP{order.shippingPrice}</span>
                 </div>
                 <div className="flex justify-between items-center py-2">
                   <div className="flex items-center text-gray-700">
                     <FaMoneyBillWave className="mr-2 text-gray-400" size={14} />
                     <span>Tax:</span>
                   </div>
-                  <span className="font-medium">${order.taxPrice}</span>
+                  <span className="font-medium">LKR{order.taxPrice}</span>
                 </div>
                 <div className="flex justify-between items-center pt-4 border-t border-gray-200 mt-2">
                   <div className="flex items-center text-gray-800">
@@ -453,7 +453,7 @@ const Order = () => {
                     <span className="text-lg font-bold">Total:</span>
                   </div>
                   <span className="text-lg font-bold text-green-600">
-                    ${order.totalPrice}
+                    LKR{order.totalPrice}
                   </span>
                 </div>
               </div>

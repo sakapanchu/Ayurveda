@@ -3,7 +3,7 @@ import HeartIcon from "./HeartIcon";
 
 const SmallProduct = ({ product }) => {
   return (
-    <div className="w-full p-4 mb-8 border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow relative"> {/* Added relative positioning */}
+    <div className="w-full p-4 mb-8 border bg-[#E5E7EB] border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow relative"> {/* Added relative positioning */}
       {/* Image container with relative positioning */}
       <div className="w-full mb-4 relative"> {/* Added relative here */}
         <img
@@ -25,7 +25,7 @@ const SmallProduct = ({ product }) => {
           </h3>
           <div className="flex items-center justify-between">
             <span className="bg-pink-100 text-pink-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-              ${product.price}
+              LKR{product.price}
             </span>
             <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
               {product.countInStock} in stock

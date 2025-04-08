@@ -201,6 +201,25 @@ const markOrderAsDelivered = async (req, res) => {
   }
 };
 
+const markOrderAsPaidCOD = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (order) {
+      order.isPaid = true;
+      order.paidAt = Date.now();
+
+      const updatedOrder = await order.save();
+      res.status(200).json(updatedOrder);
+    } else {
+      res.status(404);
+      throw new Error("Order not found");
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export {
   createOrder,
   getAllOrders,
@@ -211,4 +230,5 @@ export {
   findOrderById,
   markOrderAsPaid,
   markOrderAsDelivered,
+  markOrderAsPaidCOD,
 };

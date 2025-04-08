@@ -169,7 +169,7 @@ const ProductList = () => {
                       Quantity
                     </label>
                     <input
-                      type="number"
+                      type="text"
                       id="quantity"
                       className="w-full px-4 py-3 border border-green-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all "
                       value={quantity}

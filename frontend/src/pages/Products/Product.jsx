@@ -53,7 +53,7 @@ const Product = ({ product }) => {
                 whileHover={{ scale: 1.1 }}
                 className="bg-pink-500 text-white text-sm font-bold px-3 py-1 rounded-full whitespace-nowrap ml-2"
               >
-                ${product.price.toFixed(2)}
+                LKR{product.price.toFixed(2)}
               </motion.span>
             </motion.div>
            

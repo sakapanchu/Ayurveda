@@ -13,7 +13,7 @@ const Shipping = () => {
   const cart = useSelector((state) => state.cart);
   const { shippingAddress } = cart;
 
-  const [paymentMethod, setPaymentMethod] = useState("PayPal");
+  const [paymentMethod, setPaymentMethod] = useState("CashOnDelivery");
   const [address, setAddress] = useState(shippingAddress.address || "");
   const [city, setCity] = useState(shippingAddress.city || "");
   const [postalCode, setPostalCode] = useState(shippingAddress.postalCode || "");
@@ -23,8 +23,25 @@ const Shipping = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const validateForm = () => {
+    if (!address || !city || !postalCode || !phone || !country) {
+      alert("All fields are required.");
+      return false;
+    }
+    if (!/^[0-9]+$/.test(phone)) {
+      alert("Phone number must contain only digits.");
+      return false;
+    }
+    if (!/^[0-9]{5,6}$/.test(postalCode)) {
+      alert("Postal code must be 5 or 6 digits long.");
+      return false;
+    }
+    return true;
+  };
+
   const submitHandler = (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
     dispatch(saveShippingAddress({ address, city, postalCode, phone, country }));
     dispatch(savePaymentMethod(paymentMethod));
     navigate("/placeorder");
@@ -165,25 +182,6 @@ const Shipping = () => {
                 >
                   <h2 className="text-xl font-semibold text-gray-800 mb-4">Payment Method</h2>
                   <div className="space-y-3">
-                    <motion.label 
-                      className="flex items-center space-x-3 p-4 bg-white rounded-lg cursor-pointer hover:bg-green-50 transition border border-gray-200"
-                      whileHover={{ y: -2 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <input
-                        type="radio"
-                        className="form-radio h-5 w-5 text-green-500"
-                        name="paymentMethod"
-                        value="PayPal"
-                        checked={paymentMethod === "PayPal"}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
-                      />
-                      <div>
-                        <span className="block text-gray-800">PayPal or Credit Card</span>
-                        <span className="block text-gray-500 text-sm">Pay securely with PayPal or your credit card</span>
-                      </div>
-                    </motion.label>
-                    
                     <motion.label 
                       className="flex items-center space-x-3 p-4 bg-white rounded-lg cursor-pointer hover:bg-green-50 transition border border-gray-200"
                       whileHover={{ y: -2 }}

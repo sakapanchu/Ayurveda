@@ -4,18 +4,22 @@ import Navigation from "./pages/Auth/Navigation";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ChatBox from "./components/ChatBox";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 const App = () => {
   return (
-    <>
-      <ToastContainer />
-      <Navigation />
+    <PayPalScriptProvider options={{ "client-id": "your-client-id-here" }}>
+      <>
+        <ToastContainer />
+        <Navigation />
 
-      <main className="py-3">
-        <Outlet />
-      </main>
-    
-    </>
+        <main className="py-3">
+          <Outlet />
+        </main>
+        <ChatBox />
+      </>
+    </PayPalScriptProvider>
   );
 };
 

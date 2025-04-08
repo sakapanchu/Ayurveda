@@ -72,7 +72,7 @@ const Navigation = () => {
         <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-green-800 to-green-600 shadow-md p-4 flex justify-between items-center">
           <Link to="/" className="flex items-center" onClick={closeSidebar}>
             <FaLeaf className="text-2xl mr-2 text-white" />
-            <span className="font-bold text-white">AyurVeda</span>
+            <span className="font-bold text-white">TMH Ayurvedic</span>
           </Link>
           
           <div className="flex items-center space-x-4">
@@ -105,7 +105,7 @@ const Navigation = () => {
           <div className="flex items-center mb-8">
             <FaLeaf className="text-2xl" />
             <span className={`${isMobile ? "block" : "hidden nav-item-name"} ml-2 font-bold`}>
-              AyurVeda
+              TMH Ayurvedic
             </span>
           </div>
 
