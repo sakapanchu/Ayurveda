@@ -4,10 +4,39 @@ import Loader from "../../components/Loader";
 import { Link } from "react-router-dom";
 import { useGetOrdersQuery } from "../../redux/api/orderApiSlice";
 import AdminMenu from "./AdminMenu";
-import { FaSearch, FaBoxOpen } from "react-icons/fa";
+import { FaSearch, FaBoxOpen, FaTruck, FaShippingFast } from "react-icons/fa";
 
 const OrderList = () => {
   const { data: orders, isLoading, error } = useGetOrdersQuery();
+
+  // Helper function to get appropriate delivery status badge
+  const getDeliveryStatusBadge = (order) => {
+    if (order.isDelivered) {
+      return (
+        <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs text-center rounded-full bg-green-100 text-green-800">
+          Delivered
+        </span>
+      );
+    }
+    
+    if (order.deliveryStatus === "out for delivery") {
+      return (
+        <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs text-center rounded-full bg-yellow-100 text-yellow-800">
+          <div className="flex items-center">
+            <FaShippingFast className="mr-1" /> Out for Delivery
+          </div>
+        </span>
+      );
+    }
+    
+    return (
+      <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs text-center rounded-full bg-red-100 text-red-800">
+        <div className="flex items-center">
+          <FaTruck className="mr-1" /> Processing
+        </div>
+      </span>
+    );
+  };
 
   return (
     <motion.div
@@ -147,15 +176,7 @@ const OrderList = () => {
                             >
                               {order.isPaid ? "Paid" : "Pending"}
                             </span>
-                            <span
-                              className={`px-1.5 sm:px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs text-center rounded-full ${
-                                order.isDelivered
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-red-100 text-red-800"
-                              }`}
-                            >
-                              {order.isDelivered ? "Delivered" : "Shipping"}
-                            </span>
+                            {getDeliveryStatusBadge(order)}
                           </div>
                         </td>
                         <td className="px-2 sm:px-4 py-4 whitespace-nowrap text-right">

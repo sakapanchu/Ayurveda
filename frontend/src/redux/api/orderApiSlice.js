@@ -51,6 +51,23 @@ export const orderApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    // New mutations for updating order status
+    updateOrderDeliveryStatus: builder.mutation({
+      query: ({ orderId, deliveryStatus }) => ({
+        url: `${ORDERS_URL}/${orderId}/update-delivery`,
+        method: "PUT",
+        body: { deliveryStatus },
+      }),
+    }),
+
+    updateOrderPaymentStatus: builder.mutation({
+      query: ({ orderId, isPaid }) => ({
+        url: `${ORDERS_URL}/${orderId}/update-payment`,
+        method: "PUT",
+        body: { isPaid },
+      }),
+    }),
+
     getTotalOrders: builder.query({
       query: () => `${ORDERS_URL}/total-orders`,
     }),
@@ -77,4 +94,7 @@ export const {
   useGetMyOrdersQuery,
   useDeliverOrderMutation,
   useGetOrdersQuery,
+  // New mutations exports
+  useUpdateOrderDeliveryStatusMutation,
+  useUpdateOrderPaymentStatusMutation,
 } = orderApiSlice;

@@ -220,6 +220,60 @@ const markOrderAsPaidCOD = async (req, res) => {
   }
 };
 
+const updateOrderDeliveryStatus = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    const { deliveryStatus } = req.body;
+
+    if (order) {
+      // Update delivery status based on the provided value
+      if (deliveryStatus === 'delivered') {
+        order.isDelivered = true;
+        order.deliveredAt = Date.now();
+        order.deliveryStatus = 'delivered';
+      } else {
+        // For other statuses, update the status but keep isDelivered as false
+        order.isDelivered = false;
+        order.deliveryStatus = deliveryStatus; // 'processing' or 'out for delivery'
+      }
+
+      const updatedOrder = await order.save();
+      res.json(updatedOrder);
+    } else {
+      res.status(404);
+      throw new Error("Order not found");
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Update payment status manually by admin
+const updateOrderPaymentStatus = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    const { isPaid } = req.body;
+
+    if (order) {
+      order.isPaid = isPaid;
+      if (isPaid) {
+        order.paidAt = Date.now();
+      } else {
+        // If marking as unpaid, remove the paid date
+        order.paidAt = null;
+      }
+
+      const updatedOrder = await order.save();
+      res.status(200).json(updatedOrder);
+    } else {
+      res.status(404);
+      throw new Error("Order not found");
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 export {
   createOrder,
   getAllOrders,
@@ -231,4 +285,6 @@ export {
   markOrderAsPaid,
   markOrderAsDelivered,
   markOrderAsPaidCOD,
+  updateOrderDeliveryStatus,
+  updateOrderPaymentStatus,
 };
