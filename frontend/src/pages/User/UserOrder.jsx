@@ -3,7 +3,7 @@ import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import { Link } from "react-router-dom";
 import { useGetMyOrdersQuery } from "../../redux/api/orderApiSlice";
-import { FaBox, FaMoneyBillWave, FaCalendarAlt, FaInfoCircle, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { FaBox, FaMoneyBillWave, FaCalendarAlt, FaInfoCircle, FaCheckCircle, FaTimesCircle, FaTruck, FaShippingFast } from "react-icons/fa";
 import { useEffect } from "react";
 
 const UserOrder = () => {
@@ -106,6 +106,58 @@ const UserOrder = () => {
   );
 };
 
+// Helper function to get appropriate delivery status badge
+const getDeliveryStatusBadge = (order, isMobile = false) => {
+  if (order.isDelivered) {
+    return (
+      <span className={`${isMobile ? 'text-xs' : 'px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full'} bg-green-800/50 text-green-200`}>
+        <div className="flex items-center">
+          <FaCheckCircle className="mr-1" size={12} /> Delivered
+        </div>
+      </span>
+    );
+  }
+  
+  if (order.deliveryStatus === "out for delivery") {
+    return (
+      <span className={`${isMobile ? 'text-xs' : 'px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full'} bg-yellow-800/50 text-yellow-200`}>
+        <div className="flex items-center">
+          <FaShippingFast className="mr-1" size={12} /> Out for Delivery
+        </div>
+      </span>
+    );
+  }
+  
+  return (
+    <span className={`${isMobile ? 'text-xs' : 'px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full'} bg-red-800/40 text-red-200`}>
+      <div className="flex items-center">
+        <FaTruck className="mr-1" size={12} /> Processing
+      </div>
+    </span>
+  );
+};
+
+// Helper function to get payment status badge
+const getPaymentStatusBadge = (order, isMobile = false) => {
+  return (
+    <span
+      className={`${isMobile ? 'text-xs' : 'px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full'} ${
+        order.isPaid
+          ? "bg-green-800/50 text-green-200"
+          : "bg-red-800/40 text-red-200"
+      }`}
+    >
+      <div className="flex items-center">
+        {order.isPaid ? (
+          <><FaCheckCircle className="mr-1" size={12} /> Paid</>
+        ) : (
+          <><FaTimesCircle className="mr-1" size={12} /> Not Paid</>
+        )}
+      </div>
+    </span>
+  );
+};
+
 // Extracted Order Card Component for Mobile
 const OrderCard = ({ order }) => (
   <motion.div
@@ -132,12 +184,13 @@ const OrderCard = ({ order }) => (
           ${order.totalPrice.toFixed(2)}
         </p>
       </div>
-      <div>
-        <p className="text-xs text-white/70">Status</p>
-        <div className="flex gap-2">
-          <StatusBadge condition={order.isPaid} text="Payment" />
-          <StatusBadge condition={order.isDelivered} text="Delivery" />
-        </div>
+    </div>
+
+    <div className="mt-3">
+      <p className="text-xs text-white/70 mb-2">Status</p>
+      <div className="flex flex-col space-y-2">
+        {getPaymentStatusBadge(order, true)}
+        {getDeliveryStatusBadge(order, true)}
       </div>
     </div>
 
@@ -196,8 +249,8 @@ const OrderTable = ({ orders }) => (
           </td>
           <td className="px-6 py-4 whitespace-nowrap">
             <div className="flex flex-col space-y-2">
-              <StatusBadge condition={order.isPaid} text="Payment" isTable />
-              <StatusBadge condition={order.isDelivered} text="Delivery" isTable />
+              {getPaymentStatusBadge(order)}
+              {getDeliveryStatusBadge(order)}
             </div>
           </td>
           <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -227,22 +280,6 @@ const ProductItem = ({ item, isTable = false }) => (
       </p>
     </div>
   </motion.div>
-);
-
-const StatusBadge = ({ condition, text, isTable = false }) => (
-  <span
-    className={`${isTable ? 'px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full' : 'text-xs'} ${
-      condition
-        ? isTable
-          ? "bg-green-800/50 text-green-200"
-          : "text-green-300"
-        : isTable
-          ? "bg-red-800/40 text-red-200"
-          : "text-yellow-300"
-    }`}
-  >
-    {isTable ? `${text}: ${condition ? "Paid" : "Pending"}` : condition ? "Paid" : "Pending"}
-  </span>
 );
 
 const DetailsButton = ({ orderId, isTable = false }) => (
