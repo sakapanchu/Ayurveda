@@ -11,6 +11,8 @@ import {
   useGetOrderDetailsQuery,
   useGetPaypalClientIdQuery,
   usePayOrderMutation,
+  useUpdateOrderDeliveryStatusMutation,
+  useUpdateOrderPaymentStatusMutation,
 } from "../../redux/api/orderApiSlice";
 import {
   FaPhone,
@@ -28,12 +30,15 @@ import {
   FaIdBadge,
   FaUser,
   FaEnvelope,
+  FaEdit,
 } from "react-icons/fa";
 import Footer from "../Footer";
 
 const Order = () => {
   const { id: orderId } = useParams();
   const [showPayOptions, setShowPayOptions] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState("");
+  const [deliveryStatus, setDeliveryStatus] = useState("");
 
   const {
     data: order,
@@ -43,8 +48,10 @@ const Order = () => {
   } = useGetOrderDetailsQuery(orderId);
 
   const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
-  const [deliverOrder, { isLoading: loadingDeliver }] =
-    useDeliverOrderMutation();
+  const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation();
+  const [updateDeliveryStatus, { isLoading: loadingDeliveryUpdate }] = useUpdateOrderDeliveryStatusMutation();
+  const [updatePaymentStatus, { isLoading: loadingPaymentUpdate }] = useUpdateOrderPaymentStatusMutation();
+  
   const { userInfo } = useSelector((state) => state.auth);
 
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
@@ -53,6 +60,13 @@ const Order = () => {
     isLoading: loadingPayPal,
     error: errorPayPal,
   } = useGetPaypalClientIdQuery();
+
+  useEffect(() => {
+    if (order) {
+      setPaymentStatus(order.isPaid ? "paid" : "not-paid");
+      setDeliveryStatus(order.deliveryStatus || "processing");
+    }
+  }, [order]);
 
   useEffect(() => {
     if (!errorPayPal && !loadingPayPal && paypal?.clientId) {
@@ -100,6 +114,43 @@ const Order = () => {
       toast.success("Order marked as delivered");
     } catch (error) {
       toast.error(error?.data?.message || error.message);
+    }
+  };
+
+  // New handlers for dropdown status updates
+  const handlePaymentStatusChange = async (e) => {
+    const newStatus = e.target.value;
+    setPaymentStatus(newStatus);
+    
+    try {
+      await updatePaymentStatus({
+        orderId,
+        isPaid: newStatus === "paid",
+      });
+      refetch();
+      toast.success(`Payment status updated to ${newStatus === "paid" ? "Paid" : "Not Paid"}`);
+    } catch (error) {
+      toast.error(error?.data?.message || error.message);
+      // Revert to previous state if there's an error
+      setPaymentStatus(order.isPaid ? "paid" : "not-paid");
+    }
+  };
+
+  const handleDeliveryStatusChange = async (e) => {
+    const newStatus = e.target.value;
+    setDeliveryStatus(newStatus);
+    
+    try {
+      await updateDeliveryStatus({
+        orderId,
+        deliveryStatus: newStatus,
+      });
+      refetch();
+      toast.success(`Delivery status updated to ${newStatus}`);
+    } catch (error) {
+      toast.error(error?.data?.message || error.message);
+      // Revert to previous state if there's an error
+      setDeliveryStatus(order.deliveryStatus || "processing");
     }
   };
 
@@ -377,37 +428,88 @@ const Order = () => {
                     <p className="font-medium text-gray-700">Order Status</p>
                   </div>
                   <div className="ml-11">
-                    {order.isPaid ? (
-                      <Message variant="success">
-                        <div className="flex items-center gap-2">
-                          <FaCheckCircle /> Paid on{" "}
-                          {new Date(order.paidAt).toLocaleString()}
+                    {userInfo?.isAdmin ? (
+                      <div className="space-y-4">
+                        {/* Payment Status Dropdown */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Payment Status
+                          </label>
+                          <div className="flex items-center text-gray-600 space-x-2">
+                            <select
+                              value={paymentStatus}
+                              onChange={handlePaymentStatusChange}
+                              disabled={loadingPaymentUpdate}
+                              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md"
+                            >
+                              <option value="not-paid">Not Paid</option>
+                              <option value="paid">Paid</option>
+                            </select>
+                            <FaEdit className="text-green-500" />
+                          </div>
+                          {loadingPaymentUpdate && (
+                            <p className="text-xs text-green-600 mt-1">Updating...</p>
+                          )}
                         </div>
-                      </Message>
+                        
+                        {/* Delivery Status Dropdown */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Delivery Status
+                          </label>
+                          <div className="flex items-center text-gray-600 space-x-2 ">
+                            <select
+                              value={deliveryStatus}
+                              onChange={handleDeliveryStatusChange}
+                              disabled={loadingDeliveryUpdate}
+                              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md"
+                            >
+                              <option value="processing">Processing</option>
+                              <option value="out for delivery">Out for Delivery</option>
+                              <option value="delivered">Delivered</option>
+                            </select>
+                            <FaEdit className="text-green-500" />
+                          </div>
+                          {loadingDeliveryUpdate && (
+                            <p className="text-xs text-green-600 mt-1">Updating...</p>
+                          )}
+                        </div>
+                      </div>
                     ) : (
-                      <Message variant="danger">
-                        <div className="flex items-center gap-2">
-                          <FaTimesCircle /> Not paid
-                        </div>
-                      </Message>
+                      <>
+                        {order.isPaid ? (
+                          <Message variant="success">
+                            <div className="flex items-center gap-2">
+                              <FaCheckCircle /> Paid on{" "}
+                              {new Date(order.paidAt).toLocaleString()}
+                            </div>
+                          </Message>
+                        ) : (
+                          <Message variant="danger">
+                            <div className="flex items-center gap-2">
+                              <FaTimesCircle /> Not paid
+                            </div>
+                          </Message>
+                        )}
+                      </>
                     )}
                   </div>
-                  {order.isDelivered ? (
+                  {!userInfo?.isAdmin && (
                     <div className="ml-11 mt-2">
-                      <Message variant="success">
-                        <div className="flex items-center gap-2">
-                          <FaTruckLoading /> Delivered on{" "}
-                          {new Date(order.deliveredAt).toLocaleString()}
-                        </div>
-                      </Message>
-                    </div>
-                  ) : (
-                    <div className="ml-11 mt-2">
-                      <Message variant="info">
-                        <div className="flex items-center gap-2">
-                          <FaTruck /> Processing delivery
-                        </div>
-                      </Message>
+                      {order.isDelivered ? (
+                        <Message variant="success">
+                          <div className="flex items-center gap-2">
+                            <FaTruckLoading /> Delivered on{" "}
+                            {new Date(order.deliveredAt).toLocaleString()}
+                          </div>
+                        </Message>
+                      ) : (
+                        <Message variant="info">
+                          <div className="flex items-center gap-2">
+                            <FaTruck /> {order.deliveryStatus === 'out for delivery' ? 'Out for delivery' : 'Processing delivery'}
+                          </div>
+                        </Message>
+                      )}
                     </div>
                   )}
                 </div>
@@ -522,7 +624,7 @@ const Order = () => {
               )}
 
               {/* Deliver Button */}
-              {userInfo?.isAdmin && order.isPaid && !order.isDelivered && (
+              {userInfo?.isAdmin && order.isPaid && !order.isDelivered && false && (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}

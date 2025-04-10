@@ -12,6 +12,8 @@ import {
   markOrderAsPaid,
   markOrderAsDelivered,
   markOrderAsPaidCOD,
+  updateOrderDeliveryStatus,
+  updateOrderPaymentStatus,
 } from "../controllers/orderController.js";
 
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
@@ -32,5 +34,9 @@ router
   .put(authenticate, authorizeAdmin, markOrderAsDelivered);
 
 router.put("/:id/pay-cod", authenticate, authorizeAdmin, markOrderAsPaidCOD);
+
+// New routes for updating order status
+router.put("/:id/update-delivery", authenticate, authorizeAdmin, updateOrderDeliveryStatus);
+router.put("/:id/update-payment", authenticate, authorizeAdmin, updateOrderPaymentStatus);
 
 export default router;
